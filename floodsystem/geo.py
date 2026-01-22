@@ -11,6 +11,9 @@ from .utils import sorted_by_key  # noqa
 from .stationdata import build_station_list
 from haversine import haversine
 
+stations = build_station_list()
+
+
 def stations_by_distance(stations, p):
     """
     given a list of station objects and a coordinate p, 
@@ -20,11 +23,18 @@ def stations_by_distance(stations, p):
 
     stations is a list of MonitoringStation objects and p is a tuple of floats for the coordinate p
     """
-    stations = build_station_list()
     station_distances = []
     for station in stations:
         dist = haversine(p, station.coord)
         station_distances.append((station.name, station.town, dist))
     return sorted_by_key(station_distances, 2)
+
+def stations_within_radius(stations, centre, r):
+    within_radius = []
+    for station in stations:
+        dist = haversine(centre, station.coord)
+        if dist <= r:
+            within_radius.append(station.name)
+    return within_radius
 
 
