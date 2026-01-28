@@ -9,7 +9,8 @@ def run(p):
     # Build list of stations
     stations = build_station_list()
     sorted_distances = stations_by_distance(stations, p)
-    print(sorted_distances[:10])
+    x = [(station.name, station.town, distance) for station, distance in sorted_distances[:10]]
+    print(x)
 
 p = (52.2053, 0.1218)
 if __name__ == "__main__":

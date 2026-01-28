@@ -26,8 +26,8 @@ def stations_by_distance(stations, p):
     station_distances = []
     for station in stations:
         dist = haversine(p, station.coord)
-        station_distances.append((station.name, station.town, dist))
-    return sorted_by_key(station_distances, 2)
+        station_distances.append((station, dist))
+    return sorted_by_key(station_distances, 1)
 
 def stations_within_radius(stations, centre, r):
     """
@@ -38,15 +38,15 @@ def stations_within_radius(stations, centre, r):
     within_radius = []
     for station in stations:
         dist = haversine(centre, station.coord)
-        if dist <= r:
-            within_radius.append(station.name)
+        if dist <= r: #dist check
+            within_radius.append(station)
     return within_radius
 
 def rivers_with_station(stations):
     """
-    determines a set of rivers that have a station assigned to them.
+    determines a set of rivers that have a station assigned to them, avoids duplicaes
     """
-    rivers = set()
+    rivers = set() #set to avoid duplicates
     for station in stations:
         rivers.add(station.river)
     return sorted(rivers)
@@ -58,9 +58,9 @@ def stations_by_river(stations):
     """
     river_station = {}
     for station in stations:
-        if station.river not in river_station.keys():
+        if station.river not in river_station.keys(): #check if river not already in dict
             river_station[station.river] = []
-        river_station[station.river].append(station.name)
+        river_station[station.river].append(station.name) #add a station to the list assosciated with the river
         river_station[station.river].sort()
     return river_station
 
@@ -74,19 +74,19 @@ def rivers_by_station_number(stations, N):
     river_station_dict = stations_by_river(stations)
     
     river_counts = [(river, len(station_list)) 
-                    for river, station_list in river_station_dict.items()]
+                    for river, station_list in river_station_dict.items()] #creates list w tuples of (river, number of stations with that river)
     
-    river_counts_sorted = sorted_by_key(river_counts, 1, reverse=True)
+    river_counts_sorted = sorted_by_key(river_counts, 1, reverse=True) #sort by number of stations, descending order
     
-    if N <= 0 or not river_counts_sorted:
+    if N <= 0 or not river_counts_sorted: #if empty or invalid N, return empty list
         return []
-    if N >= len(river_counts_sorted):
+    if N >= len(river_counts_sorted): #all rivers if N greater than number of rivers
         return river_counts_sorted
 
-    nth_count = river_counts_sorted[N - 1][1]
+    nth_count = river_counts_sorted[N - 1][1] #find number of stations for Nth river
     
     result = [river_tuple for river_tuple in river_counts_sorted 
-              if river_tuple[1] >= nth_count]
+              if river_tuple[1] >= nth_count] #add rivers with station count >= Nth river's count
     
     return result
 

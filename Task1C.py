@@ -6,8 +6,9 @@ def run(centre, r):
     """Requirements for Task 1C"""
 
     stations = build_station_list()
-    print(stations_within_radius(stations, centre, r))
-    
+    x = [station.name for station in stations_within_radius(stations, centre, r)]
+    print(sorted(x))
+
 centre = (52.2053, 0.1218)
 r = 10
 if __name__ == "__main__":

@@ -58,5 +58,5 @@ class MonitoringStation:
 
 def inconsistent_typical_range_stations(stations):
     """returns a list of these stations with inconsistent typical range data"""
-    inconsistent_stations = [station.name for station in stations if not station.typical_range_consistent()]
-    return sorted_by_key(inconsistent_stations, 0)  # sort by station name
+    inconsistent_stations = [station for station in stations if not station.typical_range_consistent()]
+    return inconsistent_stations  # sort by station name
