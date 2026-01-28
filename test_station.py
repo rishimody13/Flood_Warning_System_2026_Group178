@@ -39,4 +39,4 @@ def test_typical_range_consistent():
     assert s_equal.typical_range_consistent() is False
 
     bad = inconsistent_typical_range_stations([s_ok, s_none, s_bad_order, s_equal])
-    assert bad == [s_none, s_bad_order, s_equal]
+    assert bad == [s_none.name, s_bad_order.name, s_equal.name]
