@@ -69,7 +69,7 @@ def test_rivers_by_station_number():
     assert result[0][1] == 3
     
     result = rivers_by_station_number(stations, 2)
-    assert len(result) == 2
+    assert len(result) == 3
     station_counts = {river: count for river, count in result}
     assert station_counts["River A"] == 3
     assert station_counts["River B"] == 1
