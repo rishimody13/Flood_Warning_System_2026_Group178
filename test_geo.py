@@ -82,9 +82,9 @@ def test_rivers_by_station_number():
     result = rivers_by_station_number(stations, 0)
     assert result == []
     
-    # Test N > number of rivers: should return empty list
+    # Test N > number of rivers: should return all rivers
     result = rivers_by_station_number(stations, 10)
-    assert result == []
+    assert len(result) == 3
     
     # Test empty list: should return empty list
     result = rivers_by_station_number([], 1)

@@ -63,12 +63,13 @@ def rivers_by_station_number(stations, N):
     
     if N <= 0 or not river_counts_sorted:
         return []
-    
+    if N >= len(river_counts_sorted):
+        return river_counts_sorted
+
     nth_count = river_counts_sorted[N - 1][1]
     
     result = [river_tuple for river_tuple in river_counts_sorted 
               if river_tuple[1] >= nth_count]
     
     return result
-
 
