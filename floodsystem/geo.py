@@ -44,7 +44,7 @@ def stations_within_radius(stations, centre, r):
 
 def rivers_with_station(stations):
     """
-    determines a set of rivers that have a station assigned to them
+    determines a set of rivers that have a station assigned to them.
     """
     rivers = set()
     for station in stations:
@@ -54,7 +54,7 @@ def rivers_with_station(stations):
 def stations_by_river(stations):
     """
     associates each river from this previously mentioned set to the exact station/s that
-    they have along them
+    they have along them.
     """
     river_station = {}
     for station in stations:
