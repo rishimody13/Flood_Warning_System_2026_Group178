@@ -52,4 +52,28 @@ def stations_by_river(stations):
         river_station[station.river].sort()
     return river_station
 
+def rivers_by_station_number(stations, N):
+    # Get stations grouped by river
+    river_station_dict = stations_by_river(stations)
+    
+    # Create list of (river name, station count) tuples
+    river_counts = [(river, len(station_list)) 
+                    for river, station_list in river_station_dict.items()]
+    
+    # Sort by station count in descending order
+    river_counts_sorted = sorted_by_key(river_counts, 1, reverse=True)
+    
+    # If N is 0 or empty list, return empty list
+    if N <= 0 or not river_counts_sorted:
+        return []
+    
+    # Find the Nth entry's station count
+    nth_count = river_counts_sorted[N - 1][1]
+    
+    # Include all rivers with station count >= nth_count
+    result = [river_tuple for river_tuple in river_counts_sorted 
+              if river_tuple[1] >= nth_count]
+    
+    return result
+
 
