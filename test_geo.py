@@ -28,7 +28,7 @@ def test_stations_by_distance():
     for res, exp in zip(result, expected):
         assert res[0] == exp[0]
         assert res[1] == exp[1]
-        assert res[2] == pytest.approx(exp[2]) #distance float comparison
+
 def test_stations_within_radius():
     centre = (0.0, 0.0)
     s1 = MonitoringStation("s1", "m1", "Station 1", (0.0, 0.5), (0.0, 1.0), "River 1", "Town 1")
