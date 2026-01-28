@@ -7,6 +7,9 @@ for manipulating/modifying station data
 """
 
 
+from floodsystem.utils import sorted_by_key
+
+
 class MonitoringStation:
     """This class represents a river level monitoring station"""
 
@@ -39,3 +42,20 @@ class MonitoringStation:
         d += "   river:         {}\n".format(self.river)
         d += "   typical range: {}".format(self.typical_range)
         return d
+
+    def typical_range_consistent(self):
+        """Return True if typical range data is present and low < high."""
+        if self.typical_range is None:
+            return False
+        if len(self.typical_range) != 2: #[low, high]
+            return False
+        low, high = self.typical_range
+        if low is None or high is None:
+            return False
+        return low < high
+
+
+def inconsistent_typical_range_stations(stations):
+    """Return list of stations with inconsistent typical range data."""
+    inconsistent_stations = [station.name for station in stations if not station.typical_range_consistent()]
+    return sorted_by_key(inconsistent_stations, 0)  # sort by station name
