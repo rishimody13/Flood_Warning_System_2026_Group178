@@ -44,7 +44,8 @@ class MonitoringStation:
         return d
 
     def typical_range_consistent(self):
-        """Return True if typical range data is present and low < high."""
+        """checks the typically range data for the stations to see first if it is present
+        and the determines whether this is consistent by checking if the low range < high range"""
         if self.typical_range is None:
             return False
         if len(self.typical_range) != 2: #[low, high]
@@ -56,6 +57,6 @@ class MonitoringStation:
 
 
 def inconsistent_typical_range_stations(stations):
-    """Return list of stations with inconsistent typical range data."""
+    """returns a list of these stations with inconsistent typical range data"""
     inconsistent_stations = [station.name for station in stations if not station.typical_range_consistent()]
     return sorted_by_key(inconsistent_stations, 0)  # sort by station name
