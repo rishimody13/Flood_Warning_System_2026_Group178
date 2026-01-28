@@ -18,7 +18,7 @@ def build_station_list(use_cache=True):
     The available data for some station is incomplete or not
     available.
 
-    """
+    suck your mum"""
 
     # Fetch station data
     data = datafetcher.fetch_station_data(use_cache)
