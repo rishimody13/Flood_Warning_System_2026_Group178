@@ -30,6 +30,11 @@ def stations_by_distance(stations, p):
     return sorted_by_key(station_distances, 2)
 
 def stations_within_radius(stations, centre, r):
+    """
+    gathers data for the distance of stations from a centre and compares it to a radius r 
+    to see whether or not they lie within a certain distance from this centre.
+    A list of these stations is returned.
+    """
     within_radius = []
     for station in stations:
         dist = haversine(centre, station.coord)
@@ -38,12 +43,19 @@ def stations_within_radius(stations, centre, r):
     return within_radius
 
 def rivers_with_station(stations):
+    """
+    determines a set of rivers that have a station assigned to them
+    """
     rivers = set()
     for station in stations:
         rivers.add(station.river)
     return sorted(rivers)
 
 def stations_by_river(stations):
+    """
+    associates each river from this previously mentioned set to the exact station/s that
+    they have along them
+    """
     river_station = {}
     for station in stations:
         if station.river not in river_station.keys():
@@ -53,6 +65,11 @@ def stations_by_river(stations):
     return river_station
 
 def rivers_by_station_number(stations, N):
+    """
+    counts the number of stations each river has along them and returns a list of N
+    rivers with the greatest number of stations along them. If there are more rivers
+    with the same number of stations as the river in Nth place, they are also returned.
+    """
   
     river_station_dict = stations_by_river(stations)
     
