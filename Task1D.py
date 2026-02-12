@@ -7,9 +7,12 @@ def run():
     """Requirements for Task 1D"""
 
     stations = build_station_list()
-    # print(len(rivers_with_station(stations)))
-    # print(rivers_with_station(stations))
-    print(stations_by_river(stations))
+    print(len(rivers_with_station(stations)))
+    print(rivers_with_station(stations)[:10])
+
+    print(stations_by_river(stations)['River Aire'])
+    print(stations_by_river(stations)['River Cam'])
+    print(stations_by_river(stations)['River Thames'])
     
 
 if __name__ == "__main__":
