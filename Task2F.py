@@ -16,6 +16,7 @@ from floodsystem.analysis import polyfit
 from floodsystem.datafetcher import fetch_measure_levels
 from floodsystem.flood import stations_highest_rel_level
 from floodsystem.stationdata import build_station_list, update_water_levels
+from floodsystem.plot import plot_water_level_with_fit
 
 
 def run():
@@ -26,30 +27,14 @@ def run():
     dt = datetime.timedelta(days=2)
     degree = 4
 
-    for station, _ in top_stations:
+    for station, level in top_stations:
         dates, levels = fetch_measure_levels(station.measure_id, dt)
         if len(dates) < degree + 1:
             continue
+        plot_water_level_with_fit(station, dates, levels, degree) 
 
-        poly, d0 = polyfit(dates, levels, degree)
-        x = date2num(dates)
 
-        plt.figure()
-        plt.plot(dates, levels, label="Water level")
-        plt.plot(dates, poly(x - d0), label="Degree 4 fit")
-
-        if station.typical_range_consistent():
-            low, high = station.typical_range
-            plt.axhline(y=low, color="green", linestyle="--", label="Typical low")
-            plt.axhline(y=high, color="red", linestyle="--", label="Typical high")
-
-        plt.xlabel("Date")
-        plt.ylabel("Water level (m)")
-        plt.title(station.name)
-        plt.xticks(rotation=45)
-        plt.legend()
-        plt.tight_layout()
-        plt.show()
+        
 
 
 if __name__ == "__main__":

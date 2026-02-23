@@ -9,6 +9,7 @@ latest time history level data
 import datetime
 import json
 import os
+import time
 
 import dateutil.parser
 import requests
@@ -16,9 +17,24 @@ import requests
 
 def fetch(url):
     """Fetch data from url and return fetched JSON object"""
-    r = requests.get(url)
-    data = r.json()
-    return data
+    # The EA API can occasionally return transient non-JSON/empty responses.
+    # Retry a few times before failing.
+    attempts = 3
+    timeout_s = 10
+    headers = {"Accept": "application/json"}
+    last_error = None
+
+    for attempt in range(attempts):
+        try:
+            r = requests.get(url, timeout=timeout_s, headers=headers)
+            r.raise_for_status()
+            return r.json()
+        except (requests.exceptions.RequestException, ValueError) as err:
+            last_error = err
+            if attempt < attempts - 1:
+                time.sleep(0.5 * (2 ** attempt))
+
+    raise RuntimeError(f"Failed to fetch valid JSON from {url}") from last_error
 
 
 def dump(data, filename):
@@ -57,7 +73,7 @@ def fetch_station_data(use_cache=False):
     # URL for retrieving data for active stations with river level
     # monitoring (see
     # http://environment.data.gov.uk/flood-monitoring/doc/reference)
-    url = "http://environment.data.gov.uk/flood-monitoring/id/stations?status=Active&parameter=level&qualifier=Stage&_view=full"  # noqa
+    url = "https://environment.data.gov.uk/flood-monitoring/id/stations?status=Active&parameter=level&qualifier=Stage&_view=full"  # noqa
 
     sub_dir = 'cache'
     try:
@@ -88,7 +104,7 @@ def fetch_latest_water_level_data(use_cache=False):
     """Fetch latest levels from all 'measures'. Returns JSON object"""
 
     # URL for retrieving data
-    url = "http://environment.data.gov.uk/flood-monitoring/id/measures?parameter=level&qualifier=Stage&qualifier=level"  # noqa
+    url = "https://environment.data.gov.uk/flood-monitoring/id/measures?parameter=level&qualifier=Stage&qualifier=level"  # noqa
 
     sub_dir = 'cache'
     try:
