@@ -56,10 +56,11 @@ class MonitoringStation:
         return low < high
     
     def relative_water_level(self):
-        """returns the latest water level as a fraction of the typical range, if the data is consistent and the latest level is known"""
+        #check if data is consistent first and if it even exists
         if not self.typical_range_consistent() or self.latest_level is None:
             return None
         low, high = self.typical_range
+        #calculater the ratio then
         return (self.latest_level - low) / (high - low)
 
 

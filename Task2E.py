@@ -11,30 +11,24 @@ from floodsystem.plot import plot_water_levels
 
 def run():
 
-    # Build list of stations
     stations = build_station_list()
 
-    # Station name to find
-    station_name = "Cam"
 
-    # Find station
+    station_name = "Cam"
     station = None
     for s in stations:
         if s.name == station_name:
             station = s
             break
-
-    # Check that station could be found. Return if not found.
+    #valid station or not
     if not station:
-        print("Station {} could not be found".format(station_name))
+        print("station {} not found".format(station_name))
         return
 
-    # Fetch data over past 2 days
+    # data over past 2 days
     dt = 2
     dates, levels = fetch_measure_levels(
         station.measure_id, dt=datetime.timedelta(days=dt))
-
-    # Plot water levels
     plot_water_levels(station, dates, levels)
 
 

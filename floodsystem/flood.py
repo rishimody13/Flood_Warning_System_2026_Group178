@@ -15,4 +15,5 @@ def stations_highest_rel_level(stations, N):
         relative_level = station.relative_water_level()
         if relative_level is not None:
             stations_with_rel_level.append((station, relative_level))
-    return sorted_by_key(stations_with_rel_level, 1, reverse=True)[:N]
+    return sorted_by_key(stations_with_rel_level, 1, reverse=True)[:N] #sort then index and get first N,
+#reverse to get highest first

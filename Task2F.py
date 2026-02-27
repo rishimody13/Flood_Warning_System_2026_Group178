@@ -9,10 +9,6 @@ the past 2 days of level data and plot:
 
 import datetime
 
-import matplotlib.pyplot as plt
-from matplotlib.dates import date2num
-
-from floodsystem.analysis import polyfit
 from floodsystem.datafetcher import fetch_measure_levels
 from floodsystem.flood import stations_highest_rel_level
 from floodsystem.stationdata import build_station_list, update_water_levels
@@ -27,8 +23,12 @@ def run():
     dt = datetime.timedelta(days=2)
     degree = 4
 
+    #ltop_stations is a tuple of (station, level)
+    # level not being used here cause its the latest piece of data but comes by default
+    # with top_stations. 
     for station, level in top_stations:
         dates, levels = fetch_measure_levels(station.measure_id, dt)
+        
         if len(dates) < degree + 1:
             continue
         plot_water_level_with_fit(station, dates, levels, degree) 
