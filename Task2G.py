@@ -1,13 +1,11 @@
-# Copyright (C) 2018 Garth N. Wells
-#
-# SPDX-License-Identifier: MIT
+
 
 """Flood risk assessment for towns (Task 2G).
 
 Strategy:
 - Use current relative water level where available.
 - Estimate trend (rising/falling) from a short history fit.
-- Aggregate station risk to the town level (take worst station per town).
+- If a town has multiple assosciated stations, take worst station per town
 """
 
 import datetime
@@ -20,6 +18,7 @@ from floodsystem.flood import stations_highest_rel_level
 from floodsystem.stationdata import build_station_list, update_water_levels
 
 
+#parameters and constants
 LOOKBACK_DAYS = 2
 POLY_DEGREE = 4
 TOP_N = 50
@@ -68,47 +67,57 @@ def run():
     stations = build_station_list()
     update_water_levels(stations)
 
-    top = stations_highest_rel_level(stations, TOP_N)
-    candidates = [
-        s
-        for s, _level in top
-        if s.town
-        and s.relative_water_level() is not None
-        and s.relative_water_level() >= REL_ELEVATED
-    ]
+    top_n = stations_highest_rel_level(stations, TOP_N)
+    candidates = []
+    for station, level in top_n:
+        if station.town and (station.relative_water_level() is not None) and (station.relative_water_level() >= REL_ELEVATED):
+            candidates.append(station)
+    
+    # candidates = [
+    #     s
+    #     for s, level in top_n
+    #     if s.town
+    #     and s.relative_water_level() is not None
+    #     and s.relative_water_level() >= REL_ELEVATED
+    # ]
 
+    #worst station per town logic: if town not in dict, add, but If town in dict, compare and update if worse
     town_risk = {}
     for station in candidates:
         rel_level = station.relative_water_level()
         slope = trend_slope(station)
         risk = classify_risk(rel_level, slope)
 
-        rank = {"low": 0, "moderate": 1, "high": 2, "severe": 3}[risk]
+        standards = {"low": 0, "moderate": 1, "high": 2, "severe": 3}
+        rank = standards[risk]
         key = station.town
-        entry = (rank, rel_level, slope, station)
+        data = (rank, rel_level, slope, station)
 
         if key not in town_risk:
-            town_risk[key] = entry
+            town_risk[key] = data
         else:
             cur = town_risk[key]
-            if entry[:2] > cur[:2]:
-                town_risk[key] = entry
-
+            #takes first 2 items i.e. rank and rel_level and compares old data to new station data
+            #rank is compared first, if that is equal then rel_level is used as tiebreaker
+            if data[:2] > cur[:2]:
+                town_risk[key] = data
+                
+    #ranks towns by risk and then relative level as tiebreaker, both in descending order
     ranked = sorted(town_risk.items(), key=lambda kv: (kv[1][0], kv[1][1]), reverse=True)
 
-    print("Criteria used:")
-    print("- Current relative water level compared to typical range.")
-    print(
-        "- Short-term trend from a degree-{} polynomial over the last {} days."
-        .format(POLY_DEGREE, LOOKBACK_DAYS)
-    )
-    print("- Trend estimated only for the top {} stations by relative level."
-          .format(TOP_N))
-    print(
-        "- Trend thresholds: rising > {:.2f} m/day, rising fast > {:.2f} m/day."
-        .format(RISING, RISING_FAST)
-    )
-    print()
+    # print("Criteria used:")
+    # print("- Current relative water level compared to typical range.")
+    # print(
+    #     "- Short-term trend from a degree-{} polynomial over the last {} days."
+    #     .format(POLY_DEGREE, LOOKBACK_DAYS)
+    # )
+    # print("- Trend estimated only for the top {} stations by relative level."
+    #       .format(TOP_N))
+    # print(
+    #     "- Trend thresholds: rising > {:.2f} m/day, rising fast > {:.2f} m/day."
+    #     .format(RISING, RISING_FAST)
+    # )
+    # print()
 
     print("Towns with greatest assessed flood risk:")
     for town, (rank, rel_level, slope, station) in ranked[:PRINT_TOP]:
