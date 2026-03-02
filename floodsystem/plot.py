@@ -14,6 +14,7 @@ def plot_water_levels_base(station, dates, levels):
     plt.figure()
     plt.plot(dates, levels, label="Water level")
 
+#plots typical high and low values
     if station.typical_range_consistent():
         low, high = station.typical_range
         plt.axhline(y=low, color="green", linestyle="--", label="Typical low")
