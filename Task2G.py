@@ -119,6 +119,7 @@ def run():
     # )
     # print()
 
+#summarises most at risk towns and gives a label correlating to there risk
     print("Towns with greatest assessed flood risk:")
     for town, (rank, rel_level, slope, station) in ranked[:PRINT_TOP]:
         if rank == 0:
